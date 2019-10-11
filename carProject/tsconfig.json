@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "sourceRoot": "./",
+    "outDir": "./",
+    "rootDir": "./",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "commonjs"
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
+
