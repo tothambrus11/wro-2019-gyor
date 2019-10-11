@@ -20,12 +20,12 @@ export class Chassis {
                                 return;
                             }
                             if (sensorData[2] > midPoint) {
-                                this.leftMotor.setPower(50);
-                                this.rightMotor.setPower(0);
+                                this.leftMotor.setPower(20);
+                                this.rightMotor.setPower(10);
                                 console.log("black")
                             } else {
-                                this.leftMotor.setPower(0);
-                                this.rightMotor.setPower(50);
+                                this.leftMotor.setPower(10);
+                                this.rightMotor.setPower(20);
                                 console.log("white")
                             }
                         } else {
