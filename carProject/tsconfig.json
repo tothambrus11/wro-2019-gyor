@@ -8,7 +8,8 @@
     "rootDir": "./",
     "sourceMap": true,
     "noImplicitAny": true,
-    "module": "commonjs"
+    "module": "commonjs",
+    "allowJs": true
   },
   "exclude": [
     "node_modules"
