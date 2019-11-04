@@ -50,8 +50,42 @@ export class Lifter {
 
         this.movingMotorAngle += targetPos;
 
-        await this.movingMotor.setPosition(this.movingMotorAngle, speed);
+        //await this.movingMotor.setPosition(this.movingMotorAngle, speed);
+        await this.rotateMotor(this.movingMotor, targetPos, 80);
+
         await Robot.sleep(200);
+
+    }
+
+    async rotateMotor(motor: Motor, angle: number, power: number) {
+        await motor.resetEncoder();
+
+        await motor.setPositionKp(50);
+        await motor.setPosition(angle, power);
+        /*return new Promise(async resolve => {
+            let initPos = await motor.getEncoder();
+
+            if (angle > 0) {
+
+                motor.setPower(power);
+                setInterval(async () => {
+                    if (initPos + angle <= await motor.getEncoder()) {
+                        await motor.setPower(0);
+                        resolve();
+                    }
+                }, 20);
+
+            } else {
+                motor.setPower(-power);
+                setInterval(async () => {
+                    if (initPos + angle >= await motor.getEncoder()) {
+                        await motor.setPower(0);
+                        resolve();
+                    }
+                }, 20);
+            }
+        });*/
+
 
     }
 }

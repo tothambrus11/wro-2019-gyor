@@ -42,10 +42,10 @@ export class Robot {
         await this.commander.execute([
            // Command.PICK_UP_FRONT_LEFT,
             Command.GO_FORWARD,
-            Command.TURN_RIGHT,
-            Command.GO_FORWARD,
-            Command.TURN_LEFT
+            Command.PICK_UP_FRONT_LEFT,
+            Command.PICK_UP_FRONT_RIGHT
         ]);
+
 
         await this.lifter.resetGearShiftMotor();
 

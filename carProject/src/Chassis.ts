@@ -58,7 +58,7 @@ export class Chassis {
             return SensorArray.isBlack(sensorData[0]) &&
                 SensorArray.isBlack(sensorData[sensorData.length - 1]) &&
                 getTime() - t0 > minimumRunning;
-        }, speed, speed / 5);
+        }, speed, speed / 6);
     }
 
     async goForward(rotations: number, speed: number): Promise<void> {
@@ -79,39 +79,58 @@ export class Chassis {
 
     }
 
-    turn(turns: number, minimumRunning: number, speed: number, sensorArray: SensorArray): Promise<void> {
+    async turn(turns: number, minimumRunning: number, speed: number, sensorArray: SensorArray): Promise<void> {
 
         let t0 = getTime();
 
         if (turns < 0) {
 
-            return new Promise(async resolve => {
-                await sleep(100);
+            await Promise.all([
+                this.leftMotor.resetEncoder(),
+                this.rightMotor.resetEncoder()
+            ]);
+            await Promise.all([
+                this.leftMotor.setPosition(-180, 30),
+                this.rightMotor.setPosition(180, 30),
+            ]);
+            await Robot.sleep(1000);
+            /* return new Promise(async resolve => {
+                 await sleep(100);
 
-                await Promise.all([
-                    this.leftMotor.setPower(-speed),
-                    this.rightMotor.setPower(speed)
-                ]);
+                 await Promise.all([
+                     this.leftMotor.setPower(-speed),
+                     this.rightMotor.setPower(speed)
+                 ]);
 
-                let subscription = sensorArray
-                    .sensorData
-                    .subscribe(async values => {
-                        if (SensorArray.isBlack(values[4]) && (getTime() - t0 > minimumRunning)) {
-                            await Promise.all([
-                                this.leftMotor.setPower(0),
-                                this.rightMotor.setPower(0)
-                            ]);
-                            subscription.unsubscribe();
-                            await sleep(100);
+                 let subscription = sensorArray
+                     .sensorData
+                     .subscribe(async values => {
+                         if (SensorArray.isBlack(values[4]) && (getTime() - t0 > minimumRunning)) {
+                             await Promise.all([
+                                 this.leftMotor.setPower(0),
+                                 this.rightMotor.setPower(0)
+                             ]);
+                             subscription.unsubscribe();
+                             await sleep(100);
 
-                            resolve();
-                        }
-                    })
-            });
+                             resolve();
+                         }
+                     })
+             });
+             */
 
 
         } else {
-            return new Promise(async resolve => {
+            await Promise.all([
+                this.leftMotor.resetEncoder(),
+                this.rightMotor.resetEncoder()
+            ]);
+            await Promise.all([
+                this.leftMotor.setPosition(180, 30),
+                this.rightMotor.setPosition(-180, 30),
+            ]);
+            await Robot.sleep(1000);
+           /* return new Promise(async resolve => {
                 await sleep(100);
 
                 await Promise.all([
@@ -134,7 +153,7 @@ export class Chassis {
                     }
                 })
 
-            });
+            });*/
         }
     }
 }

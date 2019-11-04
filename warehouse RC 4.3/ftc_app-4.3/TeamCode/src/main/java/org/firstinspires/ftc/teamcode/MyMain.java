@@ -31,6 +31,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -65,6 +67,8 @@ public class MyMain extends LinearOpMode {
 
     static int count = 0;
 
+    private Arm arm;
+
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -95,10 +99,11 @@ public class MyMain extends LinearOpMode {
 
                 @Override
                 public void messageArrived(String topic, MqttMessage message) throws Exception {
-                    if (topic.equals("asd")) {
-                        MyMain.count++;
-                        MyMain.message = message.toString();
-
+                    if (topic.equals("warehouse/take-in/")) {
+                        String msg = message.toString();
+                        int x = Integer.parseInt(msg.split(" ")[0]);
+                        int y = Integer.parseInt(msg.split(" ")[1]);
+                        MyMain.message = x + " " + y;
                     }
                     telemetry.addLine("topic: " + topic + " message: " + message);
                     telemetry.update();
@@ -123,10 +128,20 @@ public class MyMain extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
+/*
+        Servo armServo = hardwareMap.get(Servo.class, "arm");
+        Servo remoteControlServo = hardwareMap.get(Servo.class, "remoteControlServo");
+        DcMotor xMoveMotor = hardwareMap.get(DcMotor.class, "xMoveMotor");
+        DcMotor yMoveMotor1 = hardwareMap.get(DcMotor.class, "yMoveMotor1");
+        DcMotor yMoveMotor2 = hardwareMap.get(DcMotor.class, "yMoveMotor2");
+        DcMotor elevatorMotor = hardwareMap.get(DcMotor.class, "elevatorMotor");
+
+        arm = new Arm(armServo, remoteControlServo, xMoveMotor, yMoveMotor1, yMoveMotor2, elevatorMotor);
+*/
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
+            telemetry.addData("mess", MyMain.message);
         }
     }
 }
