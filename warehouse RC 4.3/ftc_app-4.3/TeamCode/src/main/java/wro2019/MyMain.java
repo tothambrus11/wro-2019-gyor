@@ -43,7 +43,6 @@ public class MyMain extends LinearOpMode {
         telemetry.update();
 
 
-
         command = null;
         commandModel = new CommandModel();
 
@@ -58,8 +57,9 @@ public class MyMain extends LinearOpMode {
         DcMotor yMoveMotor2 = hardwareMap.get(DcMotor.class, "yMoveMotor2");
         DcMotor elevatorMotor = hardwareMap.get(DcMotor.class, "elevatorMotor");
         Servo inputServo = hardwareMap.get(Servo.class, "inputServo");
+        Servo pushingServo = hardwareMap.get(Servo.class, "pushingServo");
 
-        arm = new Arm(armServo, remoteControlServo, xMoveMotor, yMoveMotor1, yMoveMotor2, elevatorMotor, inputServo);
+        arm = new Arm(armServo, remoteControlServo, xMoveMotor, yMoveMotor1, yMoveMotor2, elevatorMotor, inputServo, pushingServo);
 
         waitForStart();
         runtime.reset();
@@ -76,7 +76,7 @@ public class MyMain extends LinearOpMode {
                 continue;
             }
 
-            telemetry.addData("command: " , command.toString());
+            telemetry.addData("command: ", command.toString());
             if (command != null && command.id != null && command.id > commandModel.lastCommandId) {
                 commandModel.lastCommandId = command.id;
 
@@ -107,7 +107,7 @@ public class MyMain extends LinearOpMode {
                         arm.goTo(0, 0);
 
                         try {
-                            commandModel.sendCommand("warehouse/inputFinished",targetX + " " + targetY);
+                            commandModel.sendCommand("warehouse/inputFinished", targetX + " " + targetY);
                             telemetry.addData("status", "Warehouse finished");
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -117,7 +117,55 @@ public class MyMain extends LinearOpMode {
                         }
                         break;
 
-                    case "warehouse/randomRequest":
+                    case "warehouse/output":
+                        int x = Integer.parseInt(command.message.split(" ")[0]);
+                        int y = Integer.parseInt(command.message.split(" ")[1]);
+                        int outputStationId = Integer.parseInt(command.message.split(" ")[2]);
+
+                        telemetry.addData("status", "outputting box from (" + x + "; " + y + ")...");
+                        telemetry.update();
+
+                        arm.goTo(x, y);
+                        arm.down();
+                        arm.close();
+                        arm.up();
+                        arm.goTo(0, 4);
+                        arm.down();
+                        arm.open();
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                arm.up();
+                                arm.goTo(0, 0);
+                            }
+                        });
+                        if(outputStationId == 0){
+                            arm.stopBoxOnFirstPosition();
+                            arm.remoteControlConveyorBelt();
+                            sleep(1000);
+                        }
+                        else{
+                            arm.remoteControlConveyorBelt();
+                            sleep(2000);
+                        }
+                        arm.remoteControlNone();
+                        arm.pushBoxes();
+                        arm.pushingServoBack();
+
+                        try {
+                            if (commandModel.sendCommand("warehouse/outputFinished", command.message)) {
+                                telemetry.addData("status", "output finished");
+                            } else {
+                                telemetry.addData("status", "something went wrong");
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            telemetry.addData("error", e.toString());
+                            telemetry.update();
+                            sleep(5000);
+                        }
+                        break;
+                    case "warehouse/test":
                         telemetry.addData("status", "megjoooottt");
                         telemetry.addData("topic", command.topic);
                         telemetry.addData("message", command.message);

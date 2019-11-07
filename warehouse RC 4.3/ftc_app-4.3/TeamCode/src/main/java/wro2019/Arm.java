@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Arm {
+    Servo pushingServo;
     Servo remoteControlServo;
     Servo armServo;
     Servo inputServo;
@@ -18,7 +19,7 @@ public class Arm {
 
     int elevatorMax = 240;
 
-    public Arm(Servo armServo, Servo remoteControlServo, DcMotor xMoveMotor, DcMotor yMoveMotor1, DcMotor yMoveMotor2, DcMotor elevatorMotor, Servo inputServo) {
+    public Arm(Servo armServo, Servo remoteControlServo, DcMotor xMoveMotor, DcMotor yMoveMotor1, DcMotor yMoveMotor2, DcMotor elevatorMotor, Servo inputServo, Servo pushingServo) {
         this.armServo = armServo;
         this.xMoveMotor = xMoveMotor;
         this.yMoveMotor1 = yMoveMotor1;
@@ -26,6 +27,7 @@ public class Arm {
         this.elevatorMotor = elevatorMotor;
         this.remoteControlServo = remoteControlServo;
         this.inputServo = inputServo;
+        this.pushingServo = pushingServo;
 
         init();
     }
@@ -72,6 +74,39 @@ public class Arm {
             while (elevatorMotor.isBusy()) {
                 // Do nothing
             }
+        }
+    }
+
+    public void pushingServoBack(boolean isAsync){
+        pushingServo.setPosition(0);
+        if(!isAsync){
+            sleep(700);
+        }
+    }
+
+    public void pushingServoBack(){
+        pushingServoBack(false);
+    }
+
+    public void pushBoxes(){
+        pushBoxes(false);
+    }
+
+    public void pushBoxes(boolean isAsync){
+        pushingServo.setPosition(1);
+        if(!isAsync){
+            sleep(700);
+        }
+    }
+
+    public void stopBoxOnFirstPosition() {
+        stopBoxOnFirstPosition(false);
+    }
+
+    public void stopBoxOnFirstPosition(boolean isAsync){
+        pushingServo.setPosition(0.5);
+        if(!isAsync){
+            sleep(700);
         }
     }
 
