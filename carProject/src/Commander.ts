@@ -21,7 +21,7 @@ export class Commander {
                 case Command.GO_FORWARD:
                     let shouldStop = false;
                     let speed = 40;
-                    if (commands[i + 1] && !this.isMovingCommand(commands[i + 1])) {
+                    if (commands[i + 1] && commands[i + 1] != Command.GO_FORWARD) {
                         shouldStop = true;
                         speed = 30;
                     }
@@ -126,6 +126,18 @@ export class Commander {
 
                     console.log("PUBLISHEDDDDDD");
                     break;
+
+                case Command.PUT_DOWN_FRONT_RIGHT_WAREHOUSE:
+                    await Robot.chassis.goForward(0.22, 30);
+                    await Robot.lifter.move(Lift.FRONT_RIGHT, LiftState.MIDDLE_DOWN);
+                    await Robot.chassis.goForward(-0.22, 30);
+                    await Robot.lifter.move(Lift.FRONT_RIGHT, LiftState.MIDDLE_UP);
+
+                    Robot.client.publish("warehouse/inputArrived", "2 3");
+
+                    console.log("PUBLISHEDDDDDD");
+                    break;
+
                 case Command.PICK_UP_FRONT_RIGHT_WAREHOUSE:
                     await Robot.chassis.goForward(0.22, 30);
                     await Robot.lifter.move(Lift.FRONT_RIGHT, LiftState.MIDDLE_DOWN);
@@ -417,14 +429,14 @@ export class Commander {
         if (this.map[packPos.x][packPos.y].fieldType == 0) {
             if (packPos.armIndex == Arm.LEFT_FRONT_UP || packPos.armIndex == Arm.RIGHT_REAR_UP) {
                 if (carriedThings[Arm.LEFT_FRONT_DOWN] == null)
-                    return [{x: packPos.x, y: packPos.y, dir: 2, armIndex: Arm.LEFT_FRONT_UP}];
+                    return [{x: packPos.x, y: packPos.y, dir: 0, armIndex: Arm.LEFT_FRONT_UP}];
                 else if (carriedThings[Arm.RIGHT_REAR_DOWN] == null)
-                    return [{x: packPos.x, y: packPos.y, dir: 0, armIndex: Arm.RIGHT_REAR_UP}];
+                    return [{x: packPos.x, y: packPos.y, dir: 2, armIndex: Arm.RIGHT_REAR_UP}];
             } else {
                 if (carriedThings[Arm.RIGHT_FRONT_DOWN] == null)
-                    return [{x: packPos.x, y: packPos.y, dir: 2, armIndex: Arm.RIGHT_FRONT_UP}];
+                    return [{x: packPos.x, y: packPos.y, dir: 0, armIndex: Arm.RIGHT_FRONT_UP}];
                 else if (carriedThings[Arm.LEFT_REAR_DOWN] == null)
-                    return [{x: packPos.x, y: packPos.y, dir: 0, armIndex: Arm.LEFT_FRONT_UP}];
+                    return [{x: packPos.x, y: packPos.y, dir: 2, armIndex: Arm.LEFT_FRONT_UP}];
             }
             return pickUpPositions;
         }
@@ -505,7 +517,7 @@ export class Commander {
                 let y: number = carriedThings[i].y;
                 let dir: number = carriedThings[i].dir;
                 if (this.map[x][y].fieldType == 0) {
-                    putDownPositions.push({x: x, y: y, dir: Math.floor(i / 2) * 2, armIndex: i});
+                    putDownPositions.push({x: x, y: y, dir: (Math.floor(i / 2) * 2 + 2) % 4, armIndex: i});
                     continue;
                 }
                 switch (i) {

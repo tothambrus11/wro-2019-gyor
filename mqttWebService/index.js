@@ -5,6 +5,8 @@ let client = mqtt.connect('mqtt://rpi-server:1883', {clientId: "cucc"});
 
 client.subscribe("warehouse");
 client.subscribe("warehouse/inputArrived");
+client.subscribe("warehouse/output");
+client.subscribe("warehouse/outputFinished");
 client.subscribe("oda");
 
 client.on('connect', () => {

@@ -131,19 +131,37 @@ export class Robot {
               Command.WAREHOUSE_PUT_DOWN,
           ]);*/
 
-        await this.commander.execute([Command.TURN_LEFT]);
 
-        await this.waitCommand("doloooog");
-        await this.commander.execute([
-            Command.GO_FORWARD,
-            Command.TURN_LEFT,
-            Command.PUT_DOWN_FRONT_LEFT_WAREHOUSE,
-        ]);
+       /*let plan = Robot.commander.getPlan(
+            {x: 3, y: 4, dir: 1, armIndex: null},
+            [{x: 1, y: 1, dir: 1, armIndex: null}],
+            [null, {x: 0, y: 6, dir: 0, armIndex: 1}, null, null]
+        );
+        let commandList = plan.commandList;
+
+        console.log(commandList);*/
+
+
+
+       /*await this.commander.execute([
+          Command.GO_FORWARD,
+          Command.GO_FORWARD,
+          Command.GO_FORWARD,
+          Command.TURN_LEFT,
+          Command.PUT_DOWN_FRONT_RIGHT_WAREHOUSE,
+          Command.PUT_DOWN_FRONT_LEFT_WAREHOUSE,
+       ]);*/
+
+
+        //await this.commander.execute(commandList);
+
+
+
         await this.lifter.resetGearShiftMotor();
 
 
         // await this.sleep(100000);
-        /*while (true) {
+        while (true) {
             await this.commander.execute([
                 //    3, 4, 5, 6, 7, 8, 9, 10,
 
@@ -151,7 +169,7 @@ export class Robot {
                 /*Command.GO_FORWARD,
                 Command.GO_FORWARD,
                 Command.PICK_UP_REAR_RIGHT*/
-        /*Command.GO_FORWARD,
+        Command.GO_FORWARD,
         Command.GO_FORWARD,
         Command.TURN_RIGHT,
         Command.GO_FORWARD,
@@ -193,7 +211,7 @@ export class Robot {
         Command.TURN_LEFT,
     ]);
 
-}*/
+}
 
         await this.chassis.leftMotor.setPower(0);
         await this.chassis.rightMotor.setPower(0);
