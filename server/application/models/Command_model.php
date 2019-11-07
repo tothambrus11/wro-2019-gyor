@@ -3,7 +3,7 @@
 
 class Command_model extends CI_Model
 {
-	public static $TABLE_NAME = "robot_instructions";
+	public static $TABLE_NAME = "commands";
 
 
 	/**
@@ -26,4 +26,19 @@ class Command_model extends CI_Model
 			return "error";
 		}
 	}
+
+    public function insertCommand($topic, $message)
+    {
+        $this->db->insert(self::$TABLE_NAME, array("topic" => $topic, "message" => $message));
+
+    }
+
+    public function getLastCommand()
+    {
+        $this->db->order_by("id", "DESC");
+        $result = $this->db->get(self::$TABLE_NAME, 1);
+        if($result->num_rows() < 1) return null;
+        $array = $result->result_array();
+        return $array[0];
+    }
 }

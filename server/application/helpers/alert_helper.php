@@ -20,6 +20,10 @@ function json_output($message)
     die(json_encode($message));
 }
 
+function text_output(){
+    header('Content-Type: text/plain');
+}
+
 function json_error($message)
 {
     json_output(array("error" => $message));

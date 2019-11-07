@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package wro2019;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Arm {
     Servo remoteControlServo;
     Servo armServo;
+    Servo inputServo;
     DcMotor xMoveMotor;
     DcMotor yMoveMotor1;
     DcMotor yMoveMotor2;
@@ -17,35 +18,38 @@ public class Arm {
 
     int elevatorMax = 240;
 
-    public Arm(Servo armServo, Servo remoteControlServo, DcMotor xMoveMotor, DcMotor yMoveMotor1, DcMotor yMoveMotor2, DcMotor elevatorMotor) {
+    public Arm(Servo armServo, Servo remoteControlServo, DcMotor xMoveMotor, DcMotor yMoveMotor1, DcMotor yMoveMotor2, DcMotor elevatorMotor, Servo inputServo) {
         this.armServo = armServo;
         this.xMoveMotor = xMoveMotor;
         this.yMoveMotor1 = yMoveMotor1;
         this.yMoveMotor2 = yMoveMotor2;
         this.elevatorMotor = elevatorMotor;
         this.remoteControlServo = remoteControlServo;
+        this.inputServo = inputServo;
+
         init();
     }
 
     public void init() {
-        this.up();
-        this.open();
+        this.up(true);
+        this.open(false);
+        this.rotateInputServo(true);
+        remoteControlNone();
 
-
-        this.xMoveMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         this.xMoveMotor.setTargetPosition(0);
+        this.xMoveMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         this.xMoveMotor.setPower(0.8);
 
-        this.yMoveMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         this.yMoveMotor1.setTargetPosition(0);
+        this.yMoveMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         this.yMoveMotor1.setPower(0.8);
 
-        this.yMoveMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         this.yMoveMotor2.setTargetPosition(0);
+        this.yMoveMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         this.yMoveMotor2.setPower(0.8);
 
-        this.elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         this.elevatorMotor.setTargetPosition(0);
+        this.elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         this.elevatorMotor.setPower(0.6);
     }
 
@@ -77,15 +81,11 @@ public class Arm {
 
 
     public void remoteControlNone() {
-        remoteControlServo.setPosition(0.5);
+        remoteControlServo.setPosition(0);
     }
 
     public void remoteControlConveyorBelt() {
         remoteControlServo.setPosition(1);
-    }
-
-    public void remoteControlSwipe() {
-        remoteControlServo.setPosition(0);
     }
 
     public void open() {
@@ -153,14 +153,13 @@ public class Arm {
     public void goToX(int x, boolean async) {
         int unitX = xMax / 4;
         xMoveMotor.setPower(0.8);
-        xMoveMotor.setTargetPosition(x * unitX);
+        xMoveMotor.setTargetPosition(- x * unitX);
         if (!async) {
             while (xMoveMotor.isBusy()) {
                 // Do nothing :\
             }
         }
         sleep(200);
-
     }
 
     public void goToX(int x) {
@@ -173,8 +172,8 @@ public class Arm {
         yMoveMotor1.setPower(0.8);
         yMoveMotor2.setPower(0.8);
 
-        yMoveMotor1.setTargetPosition(-y * unitY);
-        yMoveMotor2.setTargetPosition(y * unitY);
+        yMoveMotor1.setTargetPosition(y * unitY);
+        yMoveMotor2.setTargetPosition(-y * unitY);
         if (!async) {
             while (yMoveMotor2.isBusy() || yMoveMotor1.isBusy()) {
                 // Do nothing :(
@@ -186,5 +185,27 @@ public class Arm {
 
     public void goToY(int y) {
         goToY(y, false);
+    }
+
+    public void rotateInputServo() {
+        rotateInputServo(false);
+    }
+
+    public void rotateInputServo(boolean isAsync){
+        if(isAsync){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    inputServo.setPosition(0);
+                    sleep(2000);
+                    inputServo.setPosition(1);
+                }
+            }).start();
+        }
+        else{
+            inputServo.setPosition(0);
+            sleep(2000);
+            inputServo.setPosition(1);
+        }
     }
 }

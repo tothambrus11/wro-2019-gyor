@@ -1,4 +1,5 @@
 import {Robot} from "./Robot";
+import {MyMotor} from "./MyMotor";
 
 export class Lifter {
     constructor(private movingMotor: Motor,
@@ -18,7 +19,7 @@ export class Lifter {
     async move(lift: Lift, lifterState: LiftState) {
         await Robot.sleep(100);
 
-        let rate = ((lifterState == LiftState.UP || lifterState == LiftState.DOWN) ? 2.5 : 1.2);
+        let rate = ((lifterState == LiftState.UP || lifterState == LiftState.DOWN) ? 2.15 : 1.2);
 
         console.log("Rate: " + rate);
         let targetPos = ((lifterState == LiftState.DOWN || lifterState == LiftState.MIDDLE_DOWN) ? -rate * 360 : rate * 360);
@@ -51,43 +52,14 @@ export class Lifter {
         this.movingMotorAngle += targetPos;
 
         //await this.movingMotor.setPosition(this.movingMotorAngle, speed);
-        await this.rotateMotor(this.movingMotor, targetPos, 80);
+        let moci = new MyMotor(this.movingMotor);
+        console.log("speed: " + speed);
+        await moci.rotateTo(this.movingMotorAngle, 100);
 
         await Robot.sleep(200);
 
     }
 
-    async rotateMotor(motor: Motor, angle: number, power: number) {
-        await motor.resetEncoder();
-
-        await motor.setPositionKp(50);
-        await motor.setPosition(angle, power);
-        /*return new Promise(async resolve => {
-            let initPos = await motor.getEncoder();
-
-            if (angle > 0) {
-
-                motor.setPower(power);
-                setInterval(async () => {
-                    if (initPos + angle <= await motor.getEncoder()) {
-                        await motor.setPower(0);
-                        resolve();
-                    }
-                }, 20);
-
-            } else {
-                motor.setPower(-power);
-                setInterval(async () => {
-                    if (initPos + angle >= await motor.getEncoder()) {
-                        await motor.setPower(0);
-                        resolve();
-                    }
-                }, 20);
-            }
-        });*/
-
-
-    }
 }
 
 export enum Lift {

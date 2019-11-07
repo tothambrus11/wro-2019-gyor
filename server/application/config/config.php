@@ -32,7 +32,8 @@ if($isLocal){
 else{
 	$config['base_url'] = 'http://rpi-server/';
 }
-
+$config["ip_address"] = "192.168.43.74";
+$config["mqtt_port"] = 1883;
 
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, OPTIONS, POST");
@@ -171,7 +172,7 @@ $config['composer_autoload'] = FALSE;
 | DO NOT CHANGE THIS UNLESS YOU FULLY UNDERSTAND THE REPERCUSSIONS!!
 |
 */
-$config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-';
+$config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-()+';
 
 /*
 |--------------------------------------------------------------------------
