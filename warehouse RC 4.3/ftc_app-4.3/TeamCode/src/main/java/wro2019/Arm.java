@@ -37,22 +37,24 @@ public class Arm {
         this.open(false);
         this.rotateInputServo(true);
         remoteControlNone();
+        inputServo.setPosition(1);
+        pushingServoBack(true);
 
         this.xMoveMotor.setTargetPosition(0);
         this.xMoveMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.xMoveMotor.setPower(0.8);
+        this.xMoveMotor.setPower(0.7);
 
         this.yMoveMotor1.setTargetPosition(0);
         this.yMoveMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.yMoveMotor1.setPower(0.8);
+        this.yMoveMotor1.setPower(0.7);
 
         this.yMoveMotor2.setTargetPosition(0);
         this.yMoveMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.yMoveMotor2.setPower(0.8);
+        this.yMoveMotor2.setPower(0.7);
 
         this.elevatorMotor.setTargetPosition(0);
         this.elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.elevatorMotor.setPower(0.6);
+        this.elevatorMotor.setPower(0.7);
     }
 
     public void up(boolean async) {
@@ -77,24 +79,24 @@ public class Arm {
         }
     }
 
-    public void pushingServoBack(boolean isAsync){
-        pushingServo.setPosition(0);
-        if(!isAsync){
+    public void pushingServoBack(boolean isAsync) {
+        pushingServo.setPosition(1);
+        if (!isAsync) {
             sleep(700);
         }
     }
 
-    public void pushingServoBack(){
+    public void pushingServoBack() {
         pushingServoBack(false);
     }
 
-    public void pushBoxes(){
+    public void pushBoxes() {
         pushBoxes(false);
     }
 
-    public void pushBoxes(boolean isAsync){
-        pushingServo.setPosition(1);
-        if(!isAsync){
+    public void pushBoxes(boolean isAsync) {
+        pushingServo.setPosition(0.1);
+        if (!isAsync) {
             sleep(700);
         }
     }
@@ -103,9 +105,9 @@ public class Arm {
         stopBoxOnFirstPosition(false);
     }
 
-    public void stopBoxOnFirstPosition(boolean isAsync){
+    public void stopBoxOnFirstPosition(boolean isAsync) {
         pushingServo.setPosition(0.5);
-        if(!isAsync){
+        if (!isAsync) {
             sleep(700);
         }
     }
@@ -187,8 +189,8 @@ public class Arm {
 
     public void goToX(int x, boolean async) {
         int unitX = xMax / 4;
-        xMoveMotor.setPower(0.8);
-        xMoveMotor.setTargetPosition(- x * unitX);
+        xMoveMotor.setPower(0.7);
+        xMoveMotor.setTargetPosition(-x * unitX);
         if (!async) {
             while (xMoveMotor.isBusy()) {
                 // Do nothing :\
@@ -204,8 +206,8 @@ public class Arm {
     public void goToY(int y, boolean async) {
         int unitY = yMax / 4;
         // The arm moves by 2 motors on the y axis
-        yMoveMotor1.setPower(0.8);
-        yMoveMotor2.setPower(0.8);
+        yMoveMotor1.setPower(0.7);
+        yMoveMotor2.setPower(0.7);
 
         yMoveMotor1.setTargetPosition(y * unitY);
         yMoveMotor2.setTargetPosition(-y * unitY);
@@ -226,21 +228,12 @@ public class Arm {
         rotateInputServo(false);
     }
 
-    public void rotateInputServo(boolean isAsync){
-        if(isAsync){
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    inputServo.setPosition(0);
-                    sleep(2000);
-                    inputServo.setPosition(1);
-                }
-            }).start();
-        }
-        else{
-            inputServo.setPosition(0);
+    public void rotateInputServo(boolean isAsync) {
+        inputServo.setPosition(0);
+        if (!isAsync) {
             sleep(2000);
-            inputServo.setPosition(1);
         }
+        inputServo.setPosition(1);
+
     }
 }

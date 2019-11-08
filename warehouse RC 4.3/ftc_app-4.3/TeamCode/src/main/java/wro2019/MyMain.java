@@ -164,6 +164,8 @@ public class MyMain extends LinearOpMode {
                             telemetry.update();
                             sleep(5000);
                         }
+                        arm.up();
+                        arm.goTo(0,0);
                         break;
                     case "warehouse/test":
                         telemetry.addData("status", "megjoooottt");

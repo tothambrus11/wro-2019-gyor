@@ -1,5 +1,6 @@
 import {Robot} from "./Robot";
 import {Lift, LiftState} from "./Lifter";
+import {Thing} from "./Thing";
 
 export class Commander {
 
@@ -104,27 +105,36 @@ export class Commander {
 
                 case Command.PICK_UP_FRONT_LEFT_WAREHOUSE:
                     await Robot.lifter.move(Lift.FRONT_LEFT, LiftState.MIDDLE_DOWN);
-                    await Robot.chassis.goForward(0.3, 30);
+                    await Robot.chassis.goForward(0.22, 30);
                     await Robot.lifter.move(Lift.FRONT_LEFT, LiftState.MIDDLE_UP);
-                    await Robot.chassis.goForward(-0.3, 30);
+                    await Robot.chassis.goForward(-0.22, 30);
 
-                       /* PICK_UP_FRONT_RIGHT_WAREHOUSE = 12,
-                        PICK_UP_REAR_LEFT_WAREHOUSE = 13,
-                        PICK_UP_REAR_RIGHT_WAREHOUSE = 14,
-                        PUT_DOWN_FRONT_LEFT_WAREHOUSE = 15,
-                        PUT_DOWN_FRONT_RIGHT_WAREHOUSE = 16,
-                        PUT_DOWN_REAR_LEFT_WAREHOUSE = 17,
-                        PUT_DOWN_REAR_RIGHT_WAREHOUSE = 18*/
-                   break;
+                    break;
+                case Command.PICK_UP_FRONT_RIGHT_WAREHOUSE:
+                    await Robot.chassis.goForward(0.22, 30);
+                    await Robot.lifter.move(Lift.FRONT_RIGHT, LiftState.MIDDLE_DOWN);
+                    await Robot.chassis.goForward(-0.22, 30);
+                    await Robot.lifter.move(Lift.FRONT_RIGHT, LiftState.MIDDLE_UP);
+                    break;
+                case Command.PICK_UP_REAR_LEFT_WAREHOUSE:
+                    await Robot.chassis.goForward(0.22, 30);
+                    await Robot.lifter.move(Lift.REAR_LEFT, LiftState.MIDDLE_DOWN);
+                    await Robot.chassis.goForward(-0.22, 30);
+                    await Robot.lifter.move(Lift.REAR_LEFT, LiftState.MIDDLE_UP);
+                    break;
+                case Command.PICK_UP_REAR_RIGHT_WAREHOUSE:
+                    await Robot.chassis.goForward(0.22, 30);
+                    await Robot.lifter.move(Lift.REAR_RIGHT, LiftState.MIDDLE_DOWN);
+                    await Robot.chassis.goForward(-0.22, 30);
+                    await Robot.lifter.move(Lift.REAR_RIGHT, LiftState.MIDDLE_UP);
+                    break;
                 case Command.PUT_DOWN_FRONT_LEFT_WAREHOUSE:
                     await Robot.chassis.goForward(0.22, 30);
                     await Robot.lifter.move(Lift.FRONT_LEFT, LiftState.MIDDLE_DOWN);
                     await Robot.chassis.goForward(-0.22, 30);
                     await Robot.lifter.move(Lift.FRONT_LEFT, LiftState.MIDDLE_UP);
 
-                    Robot.client.publish("warehouse/inputArrived", "2 3");
-
-                    console.log("PUBLISHEDDDDDD");
+                    Robot.client.publish("warehouse/inputArrived", "2 3"); // TODO calculate warehouse position
                     break;
 
                 case Command.PUT_DOWN_FRONT_RIGHT_WAREHOUSE:
@@ -133,17 +143,24 @@ export class Commander {
                     await Robot.chassis.goForward(-0.22, 30);
                     await Robot.lifter.move(Lift.FRONT_RIGHT, LiftState.MIDDLE_UP);
 
-                    Robot.client.publish("warehouse/inputArrived", "2 3");
-
-                    console.log("PUBLISHEDDDDDD");
+                    Robot.client.publish("warehouse/inputArrived", "2 3"); // TODO warhouse position
                     break;
 
-                case Command.PICK_UP_FRONT_RIGHT_WAREHOUSE:
-                    await Robot.chassis.goForward(0.22, 30);
-                    await Robot.lifter.move(Lift.FRONT_RIGHT, LiftState.MIDDLE_DOWN);
+                case Command.PUT_DOWN_REAR_LEFT_WAREHOUSE:
                     await Robot.chassis.goForward(-0.22, 30);
-                    await Robot.lifter.move(Lift.FRONT_RIGHT, LiftState.MIDDLE_UP);
+                    await Robot.lifter.move(Lift.REAR_LEFT, LiftState.MIDDLE_DOWN);
+                    await Robot.chassis.goForward(0.22, 30);
+                    await Robot.lifter.move(Lift.REAR_LEFT, LiftState.MIDDLE_UP);
+
+                    Robot.client.publish("warehouse/inputArrived", "2 3"); // TODO warhouse position
                     break;
+                case Command.PUT_DOWN_REAR_RIGHT_WAREHOUSE:
+                    await Robot.chassis.goForward(-0.22, 30);
+                    await Robot.lifter.move(Lift.REAR_RIGHT, LiftState.MIDDLE_DOWN);
+                    await Robot.chassis.goForward(0.22, 30);
+                    await Robot.lifter.move(Lift.REAR_RIGHT, LiftState.MIDDLE_UP);
+
+                    Robot.client.publish("warehouse/inputArrived", "2 3"); // TODO warhouse position
             }
         }
     }
@@ -427,7 +444,7 @@ export class Commander {
         let pickUpPositions: Position[] = [];
 
         if (this.map[packPos.x][packPos.y].fieldType == 0) {
-            if (packPos.armIndex == Arm.LEFT_FRONT_UP || packPos.armIndex == Arm.RIGHT_REAR_UP) {
+            if (packPos.armIndex == Arm.LEFT_FRONT_DOWN || packPos.armIndex == Arm.RIGHT_REAR_DOWN) {
                 if (carriedThings[Arm.LEFT_FRONT_DOWN] == null)
                     return [{x: packPos.x, y: packPos.y, dir: 0, armIndex: Arm.LEFT_FRONT_UP}];
                 else if (carriedThings[Arm.RIGHT_REAR_DOWN] == null)
@@ -506,7 +523,6 @@ export class Commander {
 
         return pickUpPositions;
     }
-
 
     getPutDownPositions(carriedThings: Position[]): Position[] {
         let putDownPositions: Position[] = [];
@@ -628,6 +644,12 @@ export class Commander {
 
         }
     }
+
+    static getWHOutputPos(inArmPos: Thing[]){
+        if(inArmPos[0] == null || inArmPos[2] == null) return 0;
+        if(inArmPos[1] == null || inArmPos[3] == name) return 1;
+
+    }
 }
 
 export enum Command {
@@ -689,7 +711,7 @@ function arrayMerge(allDestinations: any[], lists: any[][]) {
     return allDestinations;
 }
 
-interface Position {
+export interface Position {
     x: number;
     y: number;
     dir: number;

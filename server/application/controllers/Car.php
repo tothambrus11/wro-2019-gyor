@@ -9,12 +9,12 @@
 class Car extends CI_Controller
 {
     function get_orders(){
-        require_robot_auth();
+        //require_robot_auth();
         json_output($this->ThingCoin_model->get_orders());
     }
 
     /**
-     * For testing the connection from the EV3 car
+     * For testing the connection
      */
     function test(){
         json_output(array("message" => "ok"));

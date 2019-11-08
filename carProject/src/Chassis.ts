@@ -144,6 +144,10 @@ export class Chassis {
 
 
     turn(turns: number, baseSpeed: number) {
+        let degrees: number = 194;
+
+        sleep(100);
+
         return new Promise(async resolve => {
             await this.leftMotor.resetEncoder();
             await this.rightMotor.resetEncoder();
@@ -157,7 +161,7 @@ export class Chassis {
 
             if (turns > 0) {
                 let intRval = setInterval(async () => {
-                    if (avgPos >= turns * 186) {
+                    if (avgPos >= turns * degrees) {
                         clearInterval(intRval);
                         await Promise.all([
                             this.leftMotor.setPower(0),
@@ -181,7 +185,7 @@ export class Chassis {
 
             } else {
                 let intRval = setInterval(async () => {
-                    if (avgPos >= -turns * 186) {
+                    if (avgPos >= -turns * degrees) {
                         clearInterval(intRval);
                         await Promise.all([
                             this.leftMotor.setPower(0),

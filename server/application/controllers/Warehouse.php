@@ -11,7 +11,7 @@
  * "robot_auth" post key is required for all methods
  * @property ThingCoin_model ThingCoin_model
  */
-class Warehouse extends CI_Controller
+/*class Warehouse extends CI_Controller
 {
     public function __construct()
     {
@@ -34,4 +34,4 @@ class Warehouse extends CI_Controller
         json_output($this->ThingCoin_model->get_things_in_front_of_warehouse());
     }
 
-}
+}*/

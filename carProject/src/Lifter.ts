@@ -54,7 +54,7 @@ export class Lifter {
         //await this.movingMotor.setPosition(this.movingMotorAngle, speed);
         let moci = new MyMotor(this.movingMotor);
         console.log("speed: " + speed);
-        await moci.rotateTo(this.movingMotorAngle, 100);
+        await moci.rotateTo(this.movingMotorAngle, lifterState == LiftState.MIDDLE_UP || lifterState == LiftState.UP ? 100 : 50);
 
         await Robot.sleep(200);
 
